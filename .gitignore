@@ -1,0 +1,8 @@
+mbed_settings.py*
+.vscode/
+BUILD/
+MQTT/
+easy-connect/
+mbed-os/
+.hg/
+
