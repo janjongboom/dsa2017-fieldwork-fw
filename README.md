@@ -6,9 +6,12 @@ This is the firmware that is used to gather data during Data Science Africa 2017
 
 1. Take a NUCLEO-F401RE or NUCLEO-F411RE.
 1. Take an ESP8266 module and connect to the board according to [this diagram](https://github.com/ARMmbed/dsa-2017/blob/1e797dfd75ebafd136f4849019b7b6c3105d2c3a/instructions.md#wiring).
-1. Attach an accelerometer and a temperature sensor to the board.
 1. Open ``mbed_app.json`` and configure your WiFi credentials.
 1. Open ``main.cpp`` and configure the location of your MQTT server.
+
+Next, connect either a moisture sensor (at `A0`), a temperature sensor (at `A1`) or an accelerometer (via `SDA`/`SCL`); according to the instructions during the IoT workshop.
+
+1. Open ``main.cpp`` and select the sensor (under the `Thread dataThread` line).
 1. Build and flash the application to the board.
 
 ## What the application does
