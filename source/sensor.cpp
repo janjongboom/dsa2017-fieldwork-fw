@@ -1,8 +1,11 @@
+#include "select_project.h"
 #include "mbed.h"
 #include <string.h>
 #include <sstream>
+
+#if SELECT_PROJECT == TEMPERATURE_SENSOR || SELECT_PROJECT == MOISTURE_SENSOR
+
 #include "SimpleMQTT.h"
-#include "ADXL345_I2C.h"
 
 using namespace std;
 
@@ -134,8 +137,13 @@ int main(int argc, char* argv[])
     Serial pc(USBTX, USBRX);
     pc.baud(115200);
 
-    printf("DSA2017 Data Gathering\r\n");
+#if SELECT_PROJECT == TEMPERATURE_SENSOR
+    printf("DSA2017 Data Gathering (temperature)\r\n");
+#elif SELECT_PROJECT == MOISTURE_SENSOR
+    printf("DSA2017 Data Gathering (moisture)\r\n");
+#endif
 
+    // Blink the LED until connected
     connectivityTicker.attach(&blink_led, 0.5f);
 
     // Connects to the network, and connects to MQTT server
@@ -144,10 +152,7 @@ int main(int argc, char* argv[])
     // List all topic that you'll use in here...
     string topics[] = {
         mac_address + "/temperature",
-        mac_address + "/moisture",
-        mac_address + "/accelerometer/x",
-        mac_address + "/accelerometer/y",
-        mac_address + "/accelerometer/z"
+        mac_address + "/moisture"
     };
 
     for (size_t ix = 0; ix < sizeof(topics) / sizeof(topics[0]); ix++) {
@@ -163,12 +168,16 @@ int main(int argc, char* argv[])
     connectivityTicker.detach(); // stop blinking when connected
     led = 1; // and put the LED on indefinitely
 
-    // Schedule a data-gathering thread (un-comment the sensor that you want to run)
+    // Schedule a data-gathering thread
     Thread dataThread(osPriorityNormal, 16 * 1024);
 
+#if SELECT_PROJECT == TEMPERATURE_SENSOR
     dataThread.start(&gatherTemperatureData);
-    // dataThread.start(&gatherMoistureData);
-    // dataThread.start(&gatherAccelerometerData);
+#elif SELECT_PROJECT == MOISTURE_SENSOR
+    dataThread.start(&gatherMoistureData);
+#endif
 
     wait(osWaitForever);
 }
+
+#endif
